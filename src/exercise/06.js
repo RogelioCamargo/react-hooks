@@ -13,22 +13,24 @@ import {
   PokemonDataView,
 } from '../pokemon'
 
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {error: null}
-  }
+import {ErrorBoundary} from 'react-error-boundary'
 
-  static getDerivedStateFromError(error) {
-    return {error}
-  }
-  render() {
-    const {error} = this.state
-    if (error) return <this.props.FallbackComponent error={error} />
+// class ErrorBoundary extends React.Component {
+//   constructor(props) {
+//     super(props)
+//     this.state = {error: null}
+//   }
 
-    return this.props.children
-  }
-}
+//   static getDerivedStateFromError(error) {
+//     return {error}
+//   }
+//   render() {
+//     const {error} = this.state
+//     if (error) return <this.props.FallbackComponent error={error} />
+
+//     return this.props.children
+//   }
+// }
 
 function ErrorFallback({error}) {
   return (
