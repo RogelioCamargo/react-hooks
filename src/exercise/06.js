@@ -13,39 +13,34 @@ import {
   PokemonDataView,
 } from '../pokemon'
 
-function PokemonInfo({pokemonName, setError}) {
+function PokemonInfo({pokemonName}) {
   const [pokemon, setPokemon] = React.useState(null)
-  // 🐨 use React.useEffect where the callback should be called whenever the
-  // pokemon name changes.
-  // 💰 DON'T FORGET THE DEPENDENCIES ARRAY!
-  // 💰 if the pokemonName is falsy (an empty string) then don't bother making the request (exit early).
+  const [error, setError] = React.useState(null)
+
   React.useEffect(() => {
     if (!pokemonName) return
 
     setPokemon(null)
-    fetchPokemon(pokemonName).then(data => setPokemon(data), error => setError(error))
+    fetchPokemon(pokemonName).then(
+      data => setPokemon(data),
+      error => setError(error),
+    )
   }, [pokemonName, setError])
 
-  // 🐨 before calling `fetchPokemon`, clear the current pokemon state by setting it to null.
-  // (This is to enable the loading state when switching between different pokemon.)
-  // 💰 Use the `fetchPokemon` function to fetch a pokemon by its name:
-  //   fetchPokemon('Pikachu').then(
-  //     pokemonData => {/* update all the state here */},
-  //   )
-  // 🐨 return the following things based on the `pokemon` state and `pokemonName` prop:
-  //   1. no pokemonName: 'Submit a pokemon'
-  //   2. pokemonName but no pokemon: <PokemonInfoFallback name={pokemonName} />
-  //   3. pokemon: <PokemonDataView pokemon={pokemon} />
-
-  // 💣 remove this
-  if (!pokemonName) return 'Submit a pokemon'
+  if (error)
+    return (
+      <div role="alert">
+        There was an error:{' '}
+        <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
+      </div>
+    )
+  else if (!pokemonName) return 'Submit a pokemon'
   else if (!pokemon) return <PokemonInfoFallback name={pokemonName} />
   else return <PokemonDataView pokemon={pokemon} />
 }
 
 function App() {
   const [pokemonName, setPokemonName] = React.useState('')
-  const [error, setError] = React.useState(null)
 
   function handleSubmit(newPokemonName) {
     setPokemonName(newPokemonName)
@@ -56,15 +51,8 @@ function App() {
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <PokemonInfo pokemonName={pokemonName} setError={setError} />
+        <PokemonInfo pokemonName={pokemonName} />
       </div>
-      <hr />
-      {error ? (
-        <div role="alert">
-          There was an error:{' '}
-          <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
-        </div>
-      ) : null}
     </div>
   )
 }
